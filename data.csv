@@ -1,4 +1,30 @@
 ジャンル,項目名,説明,設定例
-表示,テーマ,色のテーマを選べます,light/dark
-音声,音量,出力音量のレベルを指定,50
-ユーザー,ニックネーム,表示される名前,"あじの缶詰"
+Units,name,ユニットの内部名,example-unit
+Units,localizedName,ゲーム内で表示される名前,エクサンプルユニット
+Units,description,ユニットの説明文,テスト用ユニット
+Units,health,ヘルス量,200
+Units,speed,移動速度,1.5
+Units,flying,飛行可能かどうか (true/false),TRUE
+Units,armor,防御値,5
+Units,weapons,武器のリスト,詳細は下記参照
+Blocks,name,ブロックの内部名,example-block
+Blocks,localizedName,ゲーム内で表示される名前,エクサンプルブロック
+Blocks,description,説明文,テスト用ブロック
+Blocks,size,ブロックの大きさ (タイル単位),2
+Blocks,health,耐久値,500
+Blocks,category,ブロックのカテゴリ,defense
+Blocks,name,アイテムの内部名,example-item
+Blocks,localizedName,表示名,エクサンプルアイテム
+Blocks,description,説明文,テスト用アイテム
+Blocks,radioactivity,放射性レベル,0
+Blocks,flammability,可燃性,0.5
+Liquids,name,液体の内部名,example-liquid
+Liquids,localizedName,表示名,エクサンプル液体
+Liquids,temperature,温度,0.8
+Liquids,viscosity,粘度,0.4
+Liquids,flammability,可燃性,0.7
+Abilities,repairField,修理フィールドの範囲,5
+Abilities,forceField,フォースフィールドの持続時間,10
+Abilities,statusEffect,ステータス効果,burning
+Abilities,teleport,テレポートの範囲,15
+
