@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>設定項目ビューア</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; cursor: pointer; }
+    input[type="text"] { margin-top: 10px; width: 100%; padding: 8px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+<h2>設定項目一覧</h2>
+<input type="text" id="searchInput" placeholder="キーワードで検索..." />
+<table id="csvTable"></table>
+
+<script>
+  const CSV_URL = "data.csv"; // リポジトリ内のCSVパス
+
+  let originalData = [];
+  let sortAsc = true;
+
+  // CSVをfetchしてパース
+  fetch(CSV_URL)
+    .then(response => response.text())
+    .then(text => {
+      const rows = text.trim().split("\n").map(row =>
+        row.split(",").map(cell => cell.trim())
+      );
+      if (!validateHeaders(rows[0])) {
+        alert("CSVの列名が正しくありません（ジャンル,項目名,説明,設定例）");
+        return;
+      }
+      originalData = rows;
+      renderTable(rows);
+    })
+    .catch(err => {
+      console.error("CSV読み込みエラー:", err);
+    });
+
+  document.getElementById("searchInput").addEventListener("input", function(e) {
+    const keyword = e.target.value.toLowerCase();
+    const filtered = originalData.filter(row =>
+      row.some(cell => cell.toLowerCase().includes(keyword))
+    );
+    renderTable(filtered);
+  });
+
+  function validateHeaders(headers) {
+    const expected = ["ジャンル", "項目名", "説明", "設定例"];
+    return expected.every((h, i) => headers[i] === h);
+  }
+
+  function renderTable(data) {
+    const table = document.getElementById("csvTable");
+    table.innerHTML = "";
+
+    if (data.length === 0) return;
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    data[0].forEach((header, colIndex) => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      th.addEventListener("click", () => sortTableByColumn(colIndex));
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    data.slice(1).forEach(row => {
+      const tr = document.createElement("tr");
+      row.forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+  }
+
+  function sortTableByColumn(colIndex) {
+    const header = originalData[0];
+    const body = originalData.slice(1);
+
+    body.sort((a, b) => {
+      const valA = a[colIndex].toLowerCase();
+      const valB = b[colIndex].toLowerCase();
+      if (!isNaN(valA) && !isNaN(valB)) {
+        return sortAsc ? valA - valB : valB - valA;
+      }
+      return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    });
+
+    sortAsc = !sortAsc;
+    renderTable([header, ...body]);
+  }
+</script>
+
+</body>
+</html>
