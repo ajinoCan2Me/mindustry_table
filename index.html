@@ -19,20 +19,20 @@
 <table id="csvTable"></table>
 
 <script>
-  const CSV_URL = "data.csv"; // リポジトリ内のCSVパス
+  const CSV_URL = "data.csv"; // 同じフォルダにあるCSVファイル
 
   let originalData = [];
   let sortAsc = true;
 
-  // CSVをfetchしてパース
   fetch(CSV_URL)
     .then(response => response.text())
     .then(text => {
-      const rows = text.trim().split("\n").map(row =>
+      const rows = text.trim().split(/\r?\n/).map(row =>
         row.split(",").map(cell => cell.trim())
       );
       if (!validateHeaders(rows[0])) {
-        alert("CSVの列名が正しくありません（ジャンル,項目名,説明,設定例）");
+        alert("CSVの列名が正しくありません。\n必要: ジャンル,項目名,説明,設定例");
+        console.log("読み込まれた列名:", rows[0]);
         return;
       }
       originalData = rows;
@@ -52,7 +52,9 @@
 
   function validateHeaders(headers) {
     const expected = ["ジャンル", "項目名", "説明", "設定例"];
-    return expected.every((h, i) => headers[i] === h);
+    const cleaned = headers.map(h => h.trim().replace(/\s/g, ""));
+    const expectedClean = expected.map(h => h.trim().replace(/\s/g, ""));
+    return expectedClean.every((h, i) => cleaned[i] === h);
   }
 
   function renderTable(data) {
